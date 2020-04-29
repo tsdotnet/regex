@@ -1,0 +1,15 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "es5",
+    "strict": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "importHelpers": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

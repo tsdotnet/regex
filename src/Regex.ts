@@ -1,0 +1,253 @@
+/*!
+ * @author electricessence / https://github.com/electricessence/
+ * Named groups based on: http://trentrichardson.com/2011/08/02/javascript-regexp-match-named-captures/
+ * Licensing: MIT
+ */
+
+/* tslint:disable:max-classes-per-file unified-signatures */
+
+type Map<T> = { [key: string]: T };
+type Primitive = string | number | boolean;
+type SelectorWithIndex<TSource, TResult> = (source: TSource, index: number) => TResult;
+
+const EMPTY: string = '';
+const _I = 'i',
+	_M = 'm',
+	_W = 'w';
+
+/**
+ * https://msdn.microsoft.com/en-us/library/system.text.regularexpressions.regexoptions%28v=vs.110%29.aspx
+ */
+
+type RegexOptionsLiteral =
+	| RegexOptions.IgnoreCase
+	| 'i'
+	| 'I'
+	| RegexOptions.MultiLine
+	| 'm'
+	| 'M'
+	| RegexOptions.Unicode
+	| 'u'
+	| 'U'
+	| RegexOptions.Sticky
+	| 'y'
+	| 'Y'
+	| RegexOptions.IgnorePatternWhitespace
+	| 'w'
+	| 'W';
+
+export enum RegexOptions {
+	IgnoreCase = 'i',
+	MultiLine = 'm',
+	Unicode = 'u',
+	Sticky = 'y',
+	IgnorePatternWhitespace = 'w',
+}
+
+Object.freeze(RegexOptions);
+
+type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
+type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
+
+export class Regex {
+	private readonly _re: RegExp;
+	private readonly _keys: string[] | undefined;
+
+	constructor(pattern: string | RegExp, options?: RegexOptionsParam, ...extra: RegexOptionValues[]) {
+		if (!pattern) throw new Error("'pattern' cannot be null or empty.");
+
+		let patternString: string,
+			flags =
+				typeof options === 'string'
+					? (options + extra.join(EMPTY)).toLowerCase()
+					: ((options && (options instanceof Array ? options : [options]).concat(extra)) || extra)
+							.join(EMPTY)
+							.toLowerCase();
+
+		if (pattern instanceof RegExp) {
+			const p = pattern as RegExp;
+			if (p.ignoreCase && flags.indexOf(_I) === -1) flags += _I;
+			if (p.multiline && flags.indexOf(_M) === -1) flags += _M;
+			patternString = p.source;
+		} else {
+			patternString = pattern;
+		}
+		const ignoreWhiteSpace = flags.indexOf(_W) !== -1;
+
+		// For the majority of expected behavior, we need to eliminate global and whitespace ignore.
+		flags = flags.replace(/[gw]/g, EMPTY);
+
+		// find the keys inside the pattern, and place in mapping array {0:'key1', 1:'key2', ...}
+		const keys: string[] = [];
+		{
+			const k = patternString.match(/(?!\(\?<)(\w+)(?=>)/g);
+			if (k) {
+				for (let i = 0, len = k.length; i < len; i++) {
+					keys[i + 1] = k[i];
+				}
+
+				// remove keys from regexp leaving standard regexp
+				patternString = patternString.replace(/\?<\w+>/g, EMPTY);
+				this._keys = keys;
+			}
+
+			if (ignoreWhiteSpace) patternString = patternString.replace(/\s+/g, '\\s*');
+
+			this._re = new RegExp(patternString, flags);
+		}
+
+		Object.freeze(this);
+	}
+
+	match(input: string, startIndex: number = 0): Match {
+		const _ = this;
+		let r: RegExpExecArray | null;
+		// tslint:disable-next-line:no-conditional-assignment
+		if (!input || startIndex >= input.length || !(r = this._re.exec(input.substring(startIndex))))
+			return Match.Empty;
+
+		if (!(startIndex > 0)) startIndex = 0;
+
+		const first = startIndex + r.index;
+		let loc = first;
+		const groups = [] as Group[],
+			groupMap = {} as Map<Group>;
+
+		for (let i = 0, len = r.length; i < len; ++i) {
+			const text = r[i];
+			let g = EmptyGroup;
+			if (text != null) {
+				// Empty string might mean \b match or similar.
+				g = new Group(text, loc);
+				g.freeze();
+			}
+			if (i && _._keys && i < _._keys.length) groupMap[_._keys[i]] = g;
+			groups.push(g);
+			if (text && i !== 0) loc += text.length;
+		}
+
+		const m = new Match(r[0], first, groups, groupMap);
+		m.freeze();
+		return m;
+	}
+
+	matches(input: string): readonly Match[] {
+		const matches: Match[] = [];
+		let m: Match,
+			p = 0;
+		const end = (input && input.length) || 0;
+		// tslint:disable-next-line:no-conditional-assignment
+		while (p < end && (m = this.match(input, p)) && m.success) {
+			matches.push(m);
+			p = m.index + m.length;
+		}
+		return Object.freeze(matches);
+	}
+
+	replace(input: string, replacement: Primitive, count?: number): string;
+
+	replace(input: string, evaluator: SelectorWithIndex<Match, Primitive>, count?: number): string;
+
+	replace(input: string, r: any, count: number = Infinity): string {
+		if (!input || r == null || !(count > 0)) return input;
+		const result: string[] = [];
+		let p = 0;
+		const end = input.length,
+			isEvaluator = typeof r === 'function';
+
+		let m: Match,
+			i: number = 0;
+		// tslint:disable-next-line:no-conditional-assignment
+		while (i < count && p < end && (m = this.match(input, p)) && m.success) {
+			const { index, length } = m;
+			if (p !== index) result.push(input.substring(p, index));
+			result.push(isEvaluator ? r(m, i++) : r);
+			p = index + length;
+		}
+
+		if (p < end) result.push(input.substring(p));
+
+		return result.join(EMPTY);
+	}
+
+	isMatch(input: string): boolean {
+		return this._re.test(input);
+	}
+
+	static isMatch(input: string, pattern: string, options?: RegexOptionsParam): boolean {
+		const r = new Regex(pattern, options);
+		return r.isMatch(input);
+	}
+
+	static replace(input: string, pattern: string, replacement: string, options?: RegexOptionsParam): string;
+
+	static replace(
+		input: string,
+		pattern: string,
+		evaluator: SelectorWithIndex<Match, Primitive>,
+		options?: RegexOptionsParam,
+	): string;
+
+	static replace(input: string, pattern: string, e: any, options?: RegexOptionsParam): string {
+		const r = new Regex(pattern, options);
+		return r.replace(input, e);
+	}
+}
+
+export class Capture {
+	get length(): number {
+		const v = this.value;
+		return (v && v.length) || 0;
+	}
+
+	constructor(public readonly value: string = EMPTY, public readonly index: number = -1) {}
+
+	freeze(): void {
+		Object.freeze(this);
+	}
+}
+
+export class Group extends Capture {
+	get success(): boolean {
+		return this.index !== -1;
+	}
+
+	constructor(value: string = EMPTY, index: number = -1) {
+		super(value, index);
+	}
+
+	static get Empty(): Group {
+		return EmptyGroup;
+	}
+}
+
+const EmptyGroup = new Group();
+EmptyGroup.freeze();
+
+export class Match extends Group {
+	constructor(
+		value: string = EMPTY,
+		index: number = -1,
+		public readonly groups: Group[] = [],
+		public readonly namedGroups: Map<Group> = {},
+	) {
+		super(value, index);
+	}
+
+	freeze(): void {
+		if (!this.groups) throw new Error("'groups' cannot be null.");
+		if (!this.namedGroups) throw new Error("'groupMap' cannot be null.");
+		Object.freeze(this.groups);
+		Object.freeze(this.namedGroups);
+		super.freeze();
+	}
+
+	static get Empty(): Match {
+		return EmptyMatch;
+	}
+}
+
+const EmptyMatch = new Match();
+EmptyMatch.freeze();
+
+export default Regex;

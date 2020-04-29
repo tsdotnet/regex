@@ -1,2 +1,2 @@
 # Regex
-A .NET style Regular Expression class with named matches.
+A zero dependency, .NET style, Regular Expression class with named matches.
