@@ -1,21 +1,19 @@
-"use strict";
 /*!
  * @author electricessence / https://github.com/electricessence/
  * Named groups based on: http://trentrichardson.com/2011/08/02/javascript-regexp-match-named-captures/
  * Licensing: MIT
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = require("tslib");
+import { __extends } from "tslib";
 var EMPTY = '';
 var _I = 'i', _M = 'm', _W = 'w';
-var RegexOptions;
+export var RegexOptions;
 (function (RegexOptions) {
     RegexOptions["IgnoreCase"] = "i";
     RegexOptions["MultiLine"] = "m";
     RegexOptions["Unicode"] = "u";
     RegexOptions["Sticky"] = "y";
     RegexOptions["IgnorePatternWhitespace"] = "w";
-})(RegexOptions = exports.RegexOptions || (exports.RegexOptions = {}));
+})(RegexOptions || (RegexOptions = {}));
 Object.freeze(RegexOptions);
 var Regex = /** @class */ (function () {
     function Regex(pattern, options) {
@@ -136,7 +134,7 @@ var Regex = /** @class */ (function () {
     };
     return Regex;
 }());
-exports.Regex = Regex;
+export { Regex };
 var Capture = /** @class */ (function () {
     function Capture(value, index) {
         if (value === void 0) { value = EMPTY; }
@@ -157,9 +155,9 @@ var Capture = /** @class */ (function () {
     };
     return Capture;
 }());
-exports.Capture = Capture;
+export { Capture };
 var Group = /** @class */ (function (_super) {
-    tslib_1.__extends(Group, _super);
+    __extends(Group, _super);
     function Group(value, index) {
         if (value === void 0) { value = EMPTY; }
         if (index === void 0) { index = -1; }
@@ -181,11 +179,11 @@ var Group = /** @class */ (function (_super) {
     });
     return Group;
 }(Capture));
-exports.Group = Group;
+export { Group };
 var EmptyGroup = new Group();
 EmptyGroup.freeze();
 var Match = /** @class */ (function (_super) {
-    tslib_1.__extends(Match, _super);
+    __extends(Match, _super);
     function Match(value, index, groups, namedGroups) {
         if (value === void 0) { value = EMPTY; }
         if (index === void 0) { index = -1; }
@@ -214,8 +212,8 @@ var Match = /** @class */ (function (_super) {
     });
     return Match;
 }(Group));
-exports.Match = Match;
+export { Match };
 var EmptyMatch = new Match();
 EmptyMatch.freeze();
-exports.default = Regex;
+export default Regex;
 //# sourceMappingURL=Regex.js.map
