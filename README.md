@@ -1,4 +1,4 @@
-# ![alt text](https://avatars1.githubusercontent.com/u/64487547?s=30&amp;v=4 "tsdotnet") tsdotnet / Regex
+# ![alt text](https://avatars1.githubusercontent.com/u/64487547?s=30&amp;v=4 "tsdotnet") tsdotnet / regex
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/tsdotnet/regex/blob/master/LICENSE)
 ![Publish](https://github.com/tsdotnet/regex/workflows/Publish/badge.svg)
