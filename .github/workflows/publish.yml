@@ -20,14 +20,15 @@ jobs:
         uses: EndBug/version-check@v1
         id: check
 
-      - name: Version update detected
-        if: steps.check.outputs.changed == 'true'
-        run: 'echo "Version change found! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
-
       - name: Set up Node.js
-        uses: actions/setup-node@master
+      - uses: actions/setup-node@v1
         with:
-          node-version: 10.0.0
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install NPM Packages
+        if: steps.check.outputs.changed == 'true'
+        run: npm install
 
       - name: Publish package to NPM
         if: steps.check.outputs.changed == 'true'
