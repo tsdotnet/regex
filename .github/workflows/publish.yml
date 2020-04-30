@@ -1,12 +1,18 @@
 name: npm-publish
+
 on:
   push:
     branches:
-      - master # Change this to your default branch
+      - master
+      -
+
 jobs:
+
   npm-publish:
+
     name: Publish to NPM
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
