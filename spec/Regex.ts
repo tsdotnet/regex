@@ -13,7 +13,6 @@ const pattern = '([A-E]+)';
 // 	regex2 = new Regex(/([A-E]+)/im),
 // 	regex3 = new Regex(/([A-E]+)/);
 
-
 describe('Regex', () => {
 	describe('new', () => {
 		it('should throw', () => {
