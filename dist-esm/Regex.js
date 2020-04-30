@@ -1,21 +1,19 @@
-"use strict";
 /*!
  * @author electricessence / https://github.com/electricessence/
  * Named groups based on: http://trentrichardson.com/2011/08/02/javascript-regexp-match-named-captures/
  * Licensing: MIT
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const EMPTY = '', _I = 'i', _M = 'm', _W = 'w';
-var RegexOptions;
+export var RegexOptions;
 (function (RegexOptions) {
     RegexOptions["IgnoreCase"] = "i";
     RegexOptions["MultiLine"] = "m";
     RegexOptions["Unicode"] = "u";
     RegexOptions["Sticky"] = "y";
     RegexOptions["IgnorePatternWhitespace"] = "w";
-})(RegexOptions = exports.RegexOptions || (exports.RegexOptions = {}));
+})(RegexOptions || (RegexOptions = {}));
 Object.freeze(RegexOptions);
-class Regex {
+export class Regex {
     constructor(pattern, options, ...extra) {
         if (!pattern)
             throw new Error("'pattern' cannot be null or empty.");
@@ -169,8 +167,7 @@ class Regex {
         return this._re.test(input);
     }
 }
-exports.Regex = Regex;
-class Capture {
+export class Capture {
     constructor(value = EMPTY, index = -1) {
         this.value = value;
         this.index = index;
@@ -183,8 +180,7 @@ class Capture {
         Object.freeze(this);
     }
 }
-exports.Capture = Capture;
-class Group extends Capture {
+export class Group extends Capture {
     constructor(value = EMPTY, index = -1) {
         super(value, index);
     }
@@ -195,10 +191,9 @@ class Group extends Capture {
         return this.index !== -1;
     }
 }
-exports.Group = Group;
 const EmptyGroup = new Group();
 EmptyGroup.freeze();
-class Match extends Group {
+export class Match extends Group {
     constructor(value = EMPTY, index = -1, groups = [], namedGroups = {}) {
         super(value, index);
         this.groups = groups;
@@ -217,8 +212,7 @@ class Match extends Group {
         super.freeze();
     }
 }
-exports.Match = Match;
 const EmptyMatch = new Match();
 EmptyMatch.freeze();
-exports.default = Regex;
+export default Regex;
 //# sourceMappingURL=Regex.js.map

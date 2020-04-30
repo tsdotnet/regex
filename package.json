@@ -6,6 +6,7 @@
   "license": "MIT",
   "types": "dist/Regex.d.ts",
   "main": "dist/Regex.js",
+  "module": "dist-esm/Regex.js",
   "keywords": [
     "Regular Expression",
     "Regex",
@@ -16,8 +17,8 @@
     "named matches"
   ],
   "scripts": {
-    "clean": "rimraf dist/*",
-    "build": "npm prune && npm install && npm run clean && copyfiles -u 1 src/**/*.d.ts dist && tsc",
+    "clean": "rimraf dist/* && rimraf dist-esm/*",
+    "build": "npm prune && npm install && npm run clean && copyfiles -u 1 src/**/*.d.ts dist && tsc && tsc -p tsconfig.esm.json",
     "bump": "npm run precommit && npm version patch",
     "lint": "eslint src/**/*.ts",
     "precommit": "npm run lint && npm run test && npm run build",
