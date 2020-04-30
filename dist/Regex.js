@@ -136,7 +136,7 @@ export class Regex {
      * Replaces all instances of the pattern with the replacement.
      * @param input The input text to evaluate.
      * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param options RegexOptions to use.
+     * @param count Optional limit for number of times to replace.
      */
     replace(input, replacement, count = Infinity) {
         if (!input || replacement == null || !(count > 0))
