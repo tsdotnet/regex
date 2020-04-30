@@ -1,13 +1,16 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "noEmit": true,
-    "target": "es5",
+    "declaration": true,
+    "esModuleInterop": true,
+    "target": "es2015",
+    "module": "es2015",
     "strict": true,
     "sourceMap": true,
     "removeComments": false,
     "importHelpers": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "outDir": "dist"
   },
   "include": [
     "src/**/*"

@@ -4,16 +4,17 @@
  * Licensing: MIT
  */
 
-/* tslint:disable:max-classes-per-file unified-signatures */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 type Map<T> = { [key: string]: T };
 type Primitive = string | number | boolean;
 type SelectorWithIndex<TSource, TResult> = (source: TSource, index: number) => TResult;
 
-const EMPTY: string = '';
-const _I = 'i',
-	_M = 'm',
-	_W = 'w';
+const
+	EMPTY = '',
+	_I    = 'i',
+	_M    = 'm',
+	_W    = 'w';
 
 /**
  * https://msdn.microsoft.com/en-us/library/system.text.regularexpressions.regexoptions%28v=vs.110%29.aspx
@@ -36,11 +37,12 @@ type RegexOptionsLiteral =
 	| 'w'
 	| 'W';
 
-export enum RegexOptions {
-	IgnoreCase = 'i',
-	MultiLine = 'm',
-	Unicode = 'u',
-	Sticky = 'y',
+export enum RegexOptions
+{
+	IgnoreCase              = 'i',
+	MultiLine               = 'm',
+	Unicode                 = 'u',
+	Sticky                  = 'y',
 	IgnorePatternWhitespace = 'w',
 }
 
@@ -49,30 +51,40 @@ Object.freeze(RegexOptions);
 type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
 type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
 
-export class Regex {
+export class Regex
+{
 	private readonly _re: RegExp;
 	private readonly _keys: string[] | undefined;
 
-	constructor(pattern: string | RegExp, options?: RegexOptionsParam, ...extra: RegexOptionValues[]) {
-		if (!pattern) throw new Error("'pattern' cannot be null or empty.");
+	constructor (
+		pattern: string | RegExp,
+		options?: RegexOptionsParam,
+		...extra: RegexOptionValues[])
+	{
+		if(!pattern) throw new Error("'pattern' cannot be null or empty.");
 
 		let patternString: string,
 			flags =
-				typeof options === 'string'
+				typeof options==='string'
 					? (options + extra.join(EMPTY)).toLowerCase()
-					: ((options && (options instanceof Array ? options : [options]).concat(extra)) || extra)
-							.join(EMPTY)
-							.toLowerCase();
+					: ((options && (options instanceof Array
+					? options
+					: [options]).concat(extra)) || extra)
+					.join(EMPTY)
+					.toLowerCase();
 
-		if (pattern instanceof RegExp) {
+		if(pattern instanceof RegExp)
+		{
 			const p = pattern as RegExp;
-			if (p.ignoreCase && flags.indexOf(_I) === -1) flags += _I;
-			if (p.multiline && flags.indexOf(_M) === -1) flags += _M;
+			if(p.ignoreCase && flags.indexOf(_I)=== -1) flags += _I;
+			if(p.multiline && flags.indexOf(_M)=== -1) flags += _M;
 			patternString = p.source;
-		} else {
+		}
+		else
+		{
 			patternString = pattern;
 		}
-		const ignoreWhiteSpace = flags.indexOf(_W) !== -1;
+		const ignoreWhiteSpace = flags.indexOf(_W)!== -1;
 
 		// For the majority of expected behavior, we need to eliminate global and whitespace ignore.
 		flags = flags.replace(/[gw]/g, EMPTY);
@@ -81,8 +93,10 @@ export class Regex {
 		const keys: string[] = [];
 		{
 			const k = patternString.match(/(?!\(\?<)(\w+)(?=>)/g);
-			if (k) {
-				for (let i = 0, len = k.length; i < len; i++) {
+			if(k)
+			{
+				for(let i = 0, len = k.length; i<len; i++)
+				{
 					keys[i + 1] = k[i];
 				}
 
@@ -91,7 +105,7 @@ export class Regex {
 				this._keys = keys;
 			}
 
-			if (ignoreWhiteSpace) patternString = patternString.replace(/\s+/g, '\\s*');
+			if(ignoreWhiteSpace) patternString = patternString.replace(/\s+/g, '\\s*');
 
 			this._re = new RegExp(patternString, flags);
 		}
@@ -99,31 +113,38 @@ export class Regex {
 		Object.freeze(this);
 	}
 
-	match(input: string, startIndex: number = 0): Match {
-		const _ = this;
+	/**
+	 * Searches an input string for a substring that matches a regular expression pattern and returns the first occurrence as a single Match object.
+	 * @param input
+	 * @param startIndex
+	 */
+	match (input: string, startIndex: number = 0): Match
+	{
 		let r: RegExpExecArray | null;
 		// tslint:disable-next-line:no-conditional-assignment
-		if (!input || startIndex >= input.length || !(r = this._re.exec(input.substring(startIndex))))
+		if(!input || startIndex>=input.length || !(r = this._re.exec(input.substring(startIndex))))
 			return Match.Empty;
+		if(!(startIndex>0)) startIndex = 0;
 
-		if (!(startIndex > 0)) startIndex = 0;
-
-		const first = startIndex + r.index;
-		let loc = first;
-		const groups = [] as Group[],
+		const
+			first = startIndex + r.index,
+			groups   = [] as Group[],
 			groupMap = {} as Map<Group>;
 
-		for (let i = 0, len = r.length; i < len; ++i) {
+		let loc = first;
+		for(let i = 0, len = r.length; i<len; ++i)
+		{
 			const text = r[i];
 			let g = EmptyGroup;
-			if (text != null) {
+			if(text!=null)
+			{
 				// Empty string might mean \b match or similar.
 				g = new Group(text, loc);
 				g.freeze();
 			}
-			if (i && _._keys && i < _._keys.length) groupMap[_._keys[i]] = g;
+			if(i && this._keys && i<this._keys.length) groupMap[this._keys[i]] = g;
 			groups.push(g);
-			if (text && i !== 0) loc += text.length;
+			if(text && i!==0) loc += text.length;
 		}
 
 		const m = new Match(r[0], first, groups, groupMap);
@@ -131,92 +152,102 @@ export class Regex {
 		return m;
 	}
 
-	matches(input: string): readonly Match[] {
+	/**
+	 * Searches an input string for all occurrences of a regular expression and returns all the matches.
+	 * @param input
+	 */
+	matches (input: string): readonly Match[]
+	{
 		const matches: Match[] = [];
 		let m: Match,
 			p = 0;
 		const end = (input && input.length) || 0;
 		// tslint:disable-next-line:no-conditional-assignment
-		while (p < end && (m = this.match(input, p)) && m.success) {
+		while(p<end && (m = this.match(input, p)) && m.success)
+		{
 			matches.push(m);
 			p = m.index + m.length;
 		}
 		return Object.freeze(matches);
 	}
 
-	replace(input: string, replacement: Primitive, count?: number): string;
-
-	replace(input: string, evaluator: SelectorWithIndex<Match, Primitive>, count?: number): string;
-
-	replace(input: string, r: any, count: number = Infinity): string {
-		if (!input || r == null || !(count > 0)) return input;
+	replace (input: string, r: Primitive | SelectorWithIndex<Match, Primitive>, count: number = Infinity): string
+	{
+		if(!input || r==null || !(count>0)) return input;
 		const result: string[] = [];
 		let p = 0;
-		const end = input.length,
-			isEvaluator = typeof r === 'function';
+		const
+			end         = input.length,
+			isEvaluator = typeof r==='function';
 
 		let m: Match,
-			i: number = 0;
+			i = 0;
+
 		// tslint:disable-next-line:no-conditional-assignment
-		while (i < count && p < end && (m = this.match(input, p)) && m.success) {
-			const { index, length } = m;
-			if (p !== index) result.push(input.substring(p, index));
+		while(i<count && p<end && (m = this.match(input, p)) && m.success)
+		{
+			const {index, length} = m;
+			if(p!==index) result.push(input.substring(p, index));
+			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+			// @ts-ignore r is not easily resolved properly here.
 			result.push(isEvaluator ? r(m, i++) : r);
 			p = index + length;
 		}
 
-		if (p < end) result.push(input.substring(p));
+		if(p<end) result.push(input.substring(p));
 
 		return result.join(EMPTY);
 	}
 
-	isMatch(input: string): boolean {
+	isMatch (input: string): boolean
+	{
 		return this._re.test(input);
 	}
 
-	static isMatch(input: string, pattern: string, options?: RegexOptionsParam): boolean {
+	static isMatch (input: string, pattern: string, options?: RegexOptionsParam): boolean
+	{
 		const r = new Regex(pattern, options);
 		return r.isMatch(input);
 	}
 
-	static replace(input: string, pattern: string, replacement: string, options?: RegexOptionsParam): string;
-
-	static replace(
-		input: string,
-		pattern: string,
-		evaluator: SelectorWithIndex<Match, Primitive>,
-		options?: RegexOptionsParam,
-	): string;
-
-	static replace(input: string, pattern: string, e: any, options?: RegexOptionsParam): string {
+	static replace (input: string, pattern: string, e: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string
+	{
 		const r = new Regex(pattern, options);
 		return r.replace(input, e);
 	}
 }
 
-export class Capture {
-	get length(): number {
+export class Capture
+{
+	get length (): number
+	{
 		const v = this.value;
 		return (v && v.length) || 0;
 	}
 
-	constructor(public readonly value: string = EMPTY, public readonly index: number = -1) {}
+	constructor (public readonly value: string = EMPTY, public readonly index: number = -1) {}
 
-	freeze(): void {
+	freeze (): void
+	{
 		Object.freeze(this);
 	}
 }
 
-export class Group extends Capture {
-	get success(): boolean {
-		return this.index !== -1;
+export class Group
+	extends Capture
+{
+	get success (): boolean
+	{
+		return this.index!== -1;
 	}
 
-	constructor(value: string = EMPTY, index: number = -1) {
+	constructor (value: string = EMPTY, index: number = -1)
+	{
 		super(value, index);
 	}
 
-	static get Empty(): Group {
+	static get Empty (): Group
+	{
 		return EmptyGroup;
 	}
 }
@@ -224,25 +255,30 @@ export class Group extends Capture {
 const EmptyGroup = new Group();
 EmptyGroup.freeze();
 
-export class Match extends Group {
-	constructor(
-		value: string = EMPTY,
-		index: number = -1,
-		public readonly groups: Group[] = [],
-		public readonly namedGroups: Map<Group> = {},
-	) {
+export class Match
+	extends Group
+{
+	constructor (
+		value: string                           = EMPTY,
+		index: number                           = -1,
+		public readonly groups: Group[]         = [],
+		public readonly namedGroups: Map<Group> = {}
+	)
+	{
 		super(value, index);
 	}
 
-	freeze(): void {
-		if (!this.groups) throw new Error("'groups' cannot be null.");
-		if (!this.namedGroups) throw new Error("'groupMap' cannot be null.");
+	freeze (): void
+	{
+		if(!this.groups) throw new Error("'groups' cannot be null.");
+		if(!this.namedGroups) throw new Error("'groupMap' cannot be null.");
 		Object.freeze(this.groups);
 		Object.freeze(this.namedGroups);
 		super.freeze();
 	}
 
-	static get Empty(): Match {
+	static get Empty (): Match
+	{
 		return EmptyMatch;
 	}
 }

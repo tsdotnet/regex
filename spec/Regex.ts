@@ -2,17 +2,22 @@ import Regex, { Match } from '../src/Regex';
 
 const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const regex = new Regex('(?<' + 'first>[A-E]+)', ['i']);
-//noinspection JSUnusedLocalSymbols
-const regex2 = new Regex(/([A-E]+)/im);
-//noinspection JSUnusedLocalSymbols
-const regex3 = new Regex(/([A-E]+)/);
 // noinspection RegExpRepeatedSpace
-const regex4 = new Regex(/A	B C D  E/, 'i', 'w');
+// eslint-disable-next-line no-control-regex
+const regex4 = new Regex(/A	B C D {2}E/, 'i', 'w');
 const pattern = '([A-E]+)';
+
+// Just runtime checks.
+//noinspection JSUnusedLocalSymbols
+// const
+// 	regex2 = new Regex(/([A-E]+)/im),
+// 	regex3 = new Regex(/([A-E]+)/);
+
 
 describe('Regex', () => {
 	describe('new', () => {
 		it('should throw', () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			expect(() => new Regex(null as any)).toThrow();
 		});
 	});
@@ -64,11 +69,12 @@ describe('Regex', () => {
 			expect(Regex.replace(str, pattern, 'XXX', ['i'])).toBe('XXXFGHIJKLMNOPQRSTUVWXYZXXXfghijklmnopqrstuvwxyz');
 			//noinspection SpellCheckingInspection
 			expect(regex.replace(str, '')).toBe('FGHIJKLMNOPQRSTUVWXYZfghijklmnopqrstuvwxyz');
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			expect(regex.replace(str, null as any)).toBe(str);
 			//noinspection SpellCheckingInspection
 			expect(regex.replace(str, () => '*')).toBe('*FGHIJKLMNOPQRSTUVWXYZ*fghijklmnopqrstuvwxyz');
-			expect(regex.replace(str, (x) => x.value + '*')).toBe(
-				'ABCDE*FGHIJKLMNOPQRSTUVWXYZabcde*fghijklmnopqrstuvwxyz',
+			expect(regex.replace(str, x => x.value + '*')).toBe(
+				'ABCDE*FGHIJKLMNOPQRSTUVWXYZabcde*fghijklmnopqrstuvwxyz'
 			);
 			expect(regex.replace(str, (x, i) => i)).toBe('0FGHIJKLMNOPQRSTUVWXYZ1fghijklmnopqrstuvwxyz');
 		});
