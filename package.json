@@ -6,7 +6,6 @@
     "license": "MIT",
     "types": "dist/Regex.d.ts",
     "main": "dist/Regex.js",
-    "module": "dist/Regex.js",
     "keywords": [
         "Regular Expression",
         "Regex",
