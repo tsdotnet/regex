@@ -103,37 +103,68 @@ export class Regex {
         }
         return Object.freeze(matches);
     }
-    replace(input, r, count = Infinity) {
-        if (!input || r == null || !(count > 0))
+    /**
+     * Replaces all instances of the pattern with the replacement.
+     * @param input The input text to evaluate.
+     * @param replacement A primitive value or match evaluator to use for replacement.
+     * @param options RegexOptions to use.
+     */
+    replace(input, replacement, count = Infinity) {
+        if (!input || replacement == null || !(count > 0))
             return input;
         const result = [];
         let p = 0;
-        const end = input.length, isEvaluator = typeof r === 'function';
+        const end = input.length, isEvaluator = typeof replacement === 'function';
         let m, i = 0;
         // tslint:disable-next-line:no-conditional-assignment
         while (i < count && p < end && (m = this.match(input, p)) && m.success) {
-            const { index, length } = m;
+            const index = m.index, length = m.length;
             if (p !== index)
                 result.push(input.substring(p, index));
             // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-            // @ts-ignore r is not easily resolved properly here.
-            result.push(isEvaluator ? r(m, i++) : r);
+            // @ts-ignore replacement is not easily resolved properly here.
+            result.push(isEvaluator ? replacement(m, i++) : replacement);
             p = index + length;
         }
         if (p < end)
             result.push(input.substring(p));
         return result.join(EMPTY);
     }
+    /**
+     * Tests the input text for a match.
+     * @param input The input text to evaluate.
+     */
     isMatch(input) {
         return this._re.test(input);
     }
+    /**
+     * Tests a string pattern using a Regex for evaluation.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param options RegexOptions to use.
+     */
     static isMatch(input, pattern, options) {
         const r = new Regex(pattern, options);
         return r.isMatch(input);
     }
-    static replace(input, pattern, e, options) {
+    /**
+     * Replaces all instances of the pattern with the replacement.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param replacement A primitive value or match evaluator to use for replacement.
+     * @param options RegexOptions to use.
+     */
+    static replace(input, pattern, replacement, options) {
         const r = new Regex(pattern, options);
-        return r.replace(input, e);
+        return r.replace(input, replacement);
+    }
+    /**
+     * Escapes a RegExp sequence.
+     * @param source
+     * @returns {string}
+     */
+    static escape(source) {
+        return source.replace(/[-[\]\/{}()*+?.\\^$|]/g, '\\$&');
     }
 }
 export class Capture {

@@ -36,10 +36,39 @@ export declare class Regex {
      * @param input
      */
     matches(input: string): readonly Match[];
-    replace(input: string, r: Primitive | SelectorWithIndex<Match, Primitive>, count?: number): string;
+    /**
+     * Replaces all instances of the pattern with the replacement.
+     * @param input The input text to evaluate.
+     * @param replacement A primitive value or match evaluator to use for replacement.
+     * @param options RegexOptions to use.
+     */
+    replace(input: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, count?: number): string;
+    /**
+     * Tests the input text for a match.
+     * @param input The input text to evaluate.
+     */
     isMatch(input: string): boolean;
+    /**
+     * Tests a string pattern using a Regex for evaluation.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param options RegexOptions to use.
+     */
     static isMatch(input: string, pattern: string, options?: RegexOptionsParam): boolean;
-    static replace(input: string, pattern: string, e: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string;
+    /**
+     * Replaces all instances of the pattern with the replacement.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param replacement A primitive value or match evaluator to use for replacement.
+     * @param options RegexOptions to use.
+     */
+    static replace(input: string, pattern: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string;
+    /**
+     * Escapes a RegExp sequence.
+     * @param source
+     * @returns {string}
+     */
+    static escape(source: string): string;
 }
 export declare class Capture {
     readonly value: string;
