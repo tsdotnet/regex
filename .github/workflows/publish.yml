@@ -26,7 +26,7 @@ jobs:
           node-version: 12
           registry-url: https://registry.npmjs.org/
 
-      - name: Install NPM Packages
+      - name: Install NPM packages
         if: steps.check.outputs.changed == 'true'
         run: npm install
 
