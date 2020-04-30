@@ -245,7 +245,7 @@ export class Regex
 	 * @returns {string}
 	 */
 	static escape(source: string): string {
-		return source.replace(/[-[\]\/{}()*+?.\\^$|]/g, '\\$&');
+		return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
 	}	
 }
 

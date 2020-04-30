@@ -164,7 +164,7 @@ export class Regex {
      * @returns {string}
      */
     static escape(source) {
-        return source.replace(/[-[\]\/{}()*+?.\\^$|]/g, '\\$&');
+        return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
     }
 }
 export class Capture {
