@@ -1,10 +1,10 @@
-import Regex, { Match } from '../src/Regex';
+/* eslint-disable no-regex-spaces,no-control-regex */
+import Regex, {Match} from '../src/Regex';
 
 const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const regex = new Regex('(?<' + 'first>[A-E]+)', ['i']);
 // noinspection RegExpRepeatedSpace
-// eslint-disable-next-line no-control-regex
-const regex4 = new Regex(/A	B C D {2}E/, 'i', 'w');
+const regex4 = new Regex(/A	B C D  E/, 'i', 'w');
 const pattern = '([A-E]+)';
 
 // Just runtime checks.
@@ -49,13 +49,15 @@ describe('Regex', () => {
 
 	describe('.matches(input)', () => {
 		it('should capture all instances', () => {
-			function check(m: readonly Match[]): void {
+			function check (m: readonly Match[]): void
+			{
 				expect(m.length).toBe(2);
 				expect(m[0].value).toBe('ABCDE');
 				expect(m[0].index).toBe(0);
 				expect(m[1].value).toBe('abcde');
 				expect(m[1].index).toBe(26);
 			}
+
 			check(regex.matches(str));
 			check(regex4.matches(str));
 		});
@@ -75,7 +77,9 @@ describe('Regex', () => {
 			expect(regex.replace(str, x => x.value + '*')).toBe(
 				'ABCDE*FGHIJKLMNOPQRSTUVWXYZabcde*fghijklmnopqrstuvwxyz'
 			);
-			expect(regex.replace(str, (x, i) => i)).toBe('0FGHIJKLMNOPQRSTUVWXYZ1fghijklmnopqrstuvwxyz');
+			expect(regex.replace(str, (
+				x,
+				i) => i)).toBe('0FGHIJKLMNOPQRSTUVWXYZ1fghijklmnopqrstuvwxyz');
 		});
 	});
 });

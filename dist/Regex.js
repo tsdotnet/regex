@@ -57,6 +57,35 @@ export class Regex {
         Object.freeze(this);
     }
     /**
+     * Tests a string pattern using a Regex for evaluation.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param options RegexOptions to use.
+     */
+    static isMatch(input, pattern, options) {
+        const r = new Regex(pattern, options);
+        return r.isMatch(input);
+    }
+    /**
+     * Replaces all instances of the pattern with the replacement.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param replacement A primitive value or match evaluator to use for replacement.
+     * @param options RegexOptions to use.
+     */
+    static replace(input, pattern, replacement, options) {
+        const r = new Regex(pattern, options);
+        return r.replace(input, replacement);
+    }
+    /**
+     * Escapes a RegExp sequence.
+     * @param source
+     * @returns {string}
+     */
+    static escape(source) {
+        return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+    }
+    /**
      * Searches an input string for a substring that matches a regular expression pattern and returns the first occurrence as a single Match object.
      * @param input
      * @param startIndex
@@ -137,35 +166,6 @@ export class Regex {
     isMatch(input) {
         return this._re.test(input);
     }
-    /**
-     * Tests a string pattern using a Regex for evaluation.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param options RegexOptions to use.
-     */
-    static isMatch(input, pattern, options) {
-        const r = new Regex(pattern, options);
-        return r.isMatch(input);
-    }
-    /**
-     * Replaces all instances of the pattern with the replacement.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param options RegexOptions to use.
-     */
-    static replace(input, pattern, replacement, options) {
-        const r = new Regex(pattern, options);
-        return r.replace(input, replacement);
-    }
-    /**
-     * Escapes a RegExp sequence.
-     * @param source
-     * @returns {string}
-     */
-    static escape(source) {
-        return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
-    }
 }
 export class Capture {
     constructor(value = EMPTY, index = -1) {
@@ -181,14 +181,14 @@ export class Capture {
     }
 }
 export class Group extends Capture {
-    get success() {
-        return this.index !== -1;
-    }
     constructor(value = EMPTY, index = -1) {
         super(value, index);
     }
     static get Empty() {
         return EmptyGroup;
+    }
+    get success() {
+        return this.index !== -1;
     }
 }
 const EmptyGroup = new Group();
@@ -199,6 +199,9 @@ export class Match extends Group {
         this.groups = groups;
         this.namedGroups = namedGroups;
     }
+    static get Empty() {
+        return EmptyMatch;
+    }
     freeze() {
         if (!this.groups)
             throw new Error("'groups' cannot be null.");
@@ -207,9 +210,6 @@ export class Match extends Group {
         Object.freeze(this.groups);
         Object.freeze(this.namedGroups);
         super.freeze();
-    }
-    static get Empty() {
-        return EmptyMatch;
     }
 }
 const EmptyMatch = new Match();

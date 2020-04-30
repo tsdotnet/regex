@@ -114,6 +114,45 @@ export class Regex
 	}
 
 	/**
+	 * Tests a string pattern using a Regex for evaluation.
+	 * @param input The input text to evaluate.
+	 * @param pattern The pattern to match.
+	 * @param options RegexOptions to use.
+	 */
+	static isMatch (input: string, pattern: string, options?: RegexOptionsParam): boolean
+	{
+		const r = new Regex(pattern, options);
+		return r.isMatch(input);
+	}
+
+	/**
+	 * Replaces all instances of the pattern with the replacement.
+	 * @param input The input text to evaluate.
+	 * @param pattern The pattern to match.
+	 * @param replacement A primitive value or match evaluator to use for replacement.
+	 * @param options RegexOptions to use.
+	 */
+	static replace (
+		input: string,
+		pattern: string,
+		replacement: Primitive | SelectorWithIndex<Match, Primitive>,
+		options?: RegexOptionsParam): string
+	{
+		const r = new Regex(pattern, options);
+		return r.replace(input, replacement);
+	}
+
+	/**
+	 * Escapes a RegExp sequence.
+	 * @param source
+	 * @returns {string}
+	 */
+	static escape (source: string): string
+	{
+		return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+	}
+
+	/**
 	 * Searches an input string for a substring that matches a regular expression pattern and returns the first occurrence as a single Match object.
 	 * @param input
 	 * @param startIndex
@@ -127,7 +166,7 @@ export class Regex
 		if(!(startIndex>0)) startIndex = 0;
 
 		const
-			first = startIndex + r.index,
+			first    = startIndex + r.index,
 			groups   = [] as Group[],
 			groupMap = {} as Map<Group>;
 
@@ -174,10 +213,13 @@ export class Regex
 	/**
 	 * Replaces all instances of the pattern with the replacement.
 	 * @param input The input text to evaluate.
-	 * @param replacement A primitive value or match evaluator to use for replacement. 
-	 * @param options RegexOptions to use.
+	 * @param replacement A primitive value or match evaluator to use for replacement.
+	 * @param count Optional limit for number of times to replace.
 	 */
-	replace (input: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, count: number = Infinity): string
+	replace (
+		input: string,
+		replacement: Primitive | SelectorWithIndex<Match, Primitive>,
+		count: number = Infinity): string
 	{
 		if(!input || replacement==null || !(count>0)) return input;
 		const result: string[] = [];
@@ -213,51 +255,17 @@ export class Regex
 	{
 		return this._re.test(input);
 	}
-
-	/**
-	 * Tests a string pattern using a Regex for evaluation.
-	 * @param input The input text to evaluate.
-	 * @param pattern The pattern to match.
-	 * @param options RegexOptions to use.
-	 */
-	static isMatch (input: string, pattern: string, options?: RegexOptionsParam): boolean
-	{
-		const r = new Regex(pattern, options);
-		return r.isMatch(input);
-	}
-
-	/**
-	 * Replaces all instances of the pattern with the replacement.
-	 * @param input The input text to evaluate.
-	 * @param pattern The pattern to match.
-	 * @param replacement A primitive value or match evaluator to use for replacement. 
-	 * @param options RegexOptions to use.
-	 */
-	static replace (input: string, pattern: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string
-	{
-		const r = new Regex(pattern, options);
-		return r.replace(input, replacement);
-	}
-
-	/**
-	 * Escapes a RegExp sequence.
-	 * @param source
-	 * @returns {string}
-	 */
-	static escape(source: string): string {
-		return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
-	}	
 }
 
 export class Capture
 {
+	constructor (public readonly value: string = EMPTY, public readonly index: number = -1) {}
+
 	get length (): number
 	{
 		const v = this.value;
 		return (v && v.length) || 0;
 	}
-
-	constructor (public readonly value: string = EMPTY, public readonly index: number = -1) {}
 
 	freeze (): void
 	{
@@ -268,11 +276,6 @@ export class Capture
 export class Group
 	extends Capture
 {
-	get success (): boolean
-	{
-		return this.index!== -1;
-	}
-
 	constructor (value: string = EMPTY, index: number = -1)
 	{
 		super(value, index);
@@ -281,6 +284,11 @@ export class Group
 	static get Empty (): Group
 	{
 		return EmptyGroup;
+	}
+
+	get success (): boolean
+	{
+		return this.index!== -1;
 	}
 }
 
@@ -300,6 +308,11 @@ export class Match
 		super(value, index);
 	}
 
+	static get Empty (): Match
+	{
+		return EmptyMatch;
+	}
+
 	freeze (): void
 	{
 		if(!this.groups) throw new Error("'groups' cannot be null.");
@@ -307,11 +320,6 @@ export class Match
 		Object.freeze(this.groups);
 		Object.freeze(this.namedGroups);
 		super.freeze();
-	}
-
-	static get Empty (): Match
-	{
-		return EmptyMatch;
 	}
 }
 

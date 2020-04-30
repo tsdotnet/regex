@@ -26,6 +26,27 @@ export declare class Regex {
     private readonly _keys;
     constructor(pattern: string | RegExp, options?: RegexOptionsParam, ...extra: RegexOptionValues[]);
     /**
+     * Tests a string pattern using a Regex for evaluation.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param options RegexOptions to use.
+     */
+    static isMatch(input: string, pattern: string, options?: RegexOptionsParam): boolean;
+    /**
+     * Replaces all instances of the pattern with the replacement.
+     * @param input The input text to evaluate.
+     * @param pattern The pattern to match.
+     * @param replacement A primitive value or match evaluator to use for replacement.
+     * @param options RegexOptions to use.
+     */
+    static replace(input: string, pattern: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string;
+    /**
+     * Escapes a RegExp sequence.
+     * @param source
+     * @returns {string}
+     */
+    static escape(source: string): string;
+    /**
      * Searches an input string for a substring that matches a regular expression pattern and returns the first occurrence as a single Match object.
      * @param input
      * @param startIndex
@@ -48,45 +69,24 @@ export declare class Regex {
      * @param input The input text to evaluate.
      */
     isMatch(input: string): boolean;
-    /**
-     * Tests a string pattern using a Regex for evaluation.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param options RegexOptions to use.
-     */
-    static isMatch(input: string, pattern: string, options?: RegexOptionsParam): boolean;
-    /**
-     * Replaces all instances of the pattern with the replacement.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param options RegexOptions to use.
-     */
-    static replace(input: string, pattern: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string;
-    /**
-     * Escapes a RegExp sequence.
-     * @param source
-     * @returns {string}
-     */
-    static escape(source: string): string;
 }
 export declare class Capture {
     readonly value: string;
     readonly index: number;
-    get length(): number;
     constructor(value?: string, index?: number);
+    get length(): number;
     freeze(): void;
 }
 export declare class Group extends Capture {
-    get success(): boolean;
     constructor(value?: string, index?: number);
     static get Empty(): Group;
+    get success(): boolean;
 }
 export declare class Match extends Group {
     readonly groups: Group[];
     readonly namedGroups: Map<Group>;
     constructor(value?: string, index?: number, groups?: Group[], namedGroups?: Map<Group>);
-    freeze(): void;
     static get Empty(): Match;
+    freeze(): void;
 }
 export default Regex;
