@@ -5,6 +5,7 @@
  * Licensing: MIT
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Match = exports.Group = exports.Capture = exports.Regex = exports.RegexOptions = void 0;
 const EMPTY = '', _I = 'i', _M = 'm', _W = 'w';
 var RegexOptions;
 (function (RegexOptions) {
