@@ -1,4 +1,5 @@
 /* eslint-disable no-regex-spaces,no-control-regex */
+import {expect} from 'chai';
 import Regex, {Match} from '../src/Regex';
 
 const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -17,33 +18,33 @@ describe('Regex', () => {
 	describe('new', () => {
 		it('should throw', () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			expect(() => new Regex(null as any)).toThrow();
+			expect(() => new Regex(null as any)).to.throw();
 		});
 	});
 
 	describe('.isMatch(input)', () => {
 		it('should indicate true for match', () => {
-			expect(regex.isMatch(str)).toBeTrue();
-			expect(Regex.isMatch(str, pattern, ['i'])).toBeTrue();
+			expect(regex.isMatch(str)).to.be.true;
+			expect(Regex.isMatch(str, pattern, ['i'])).to.be.true;
 		});
 
 		it('should indicate false for non-match', () => {
-			expect(!regex.isMatch('ZYXWV')).toBeTrue();
-			expect(!Regex.isMatch('ZYXWV', pattern, ['i'])).toBeTrue();
+			expect(!regex.isMatch('ZYXWV')).to.be.true;
+			expect(!Regex.isMatch('ZYXWV', pattern, ['i'])).to.be.true;
 		});
 	});
 
 	describe('.match(input)', () => {
 		it('should match correctly', () => {
 			let m = regex.match(str);
-			expect(m.value).toBe('ABCDE');
-			expect(m.index).toBe(0);
-			expect(m.namedGroups.first.value).toBe('ABCDE');
+			expect(m.value).equal('ABCDE');
+			expect(m.index).equal(0);
+			expect(m.namedGroups.first.value).equal('ABCDE');
 
 			m = regex.match(str, 20);
-			expect(m.value).toBe('abcde');
-			expect(m.index).toBe(26);
-			expect(m.namedGroups.first.value).toBe('abcde');
+			expect(m.value).equal('abcde');
+			expect(m.index).equal(26);
+			expect(m.namedGroups.first.value).equal('abcde');
 		});
 	});
 
@@ -51,11 +52,11 @@ describe('Regex', () => {
 		it('should capture all instances', () => {
 			function check (m: readonly Match[]): void
 			{
-				expect(m.length).toBe(2);
-				expect(m[0].value).toBe('ABCDE');
-				expect(m[0].index).toBe(0);
-				expect(m[1].value).toBe('abcde');
-				expect(m[1].index).toBe(26);
+				expect(m.length).equal(2);
+				expect(m[0].value).equal('ABCDE');
+				expect(m[0].index).equal(0);
+				expect(m[1].value).equal('abcde');
+				expect(m[1].index).equal(26);
 			}
 
 			check(regex.matches(str));
@@ -66,20 +67,20 @@ describe('Regex', () => {
 	describe('.replace(input, x)', () => {
 		it('should replace requested instances', () => {
 			//noinspection SpellCheckingInspection
-			expect(regex.replace(str, 'XXX')).toBe('XXXFGHIJKLMNOPQRSTUVWXYZXXXfghijklmnopqrstuvwxyz');
-			expect(Regex.replace(str, pattern, 'XXX', ['i'])).toBe('XXXFGHIJKLMNOPQRSTUVWXYZXXXfghijklmnopqrstuvwxyz');
+			expect(regex.replace(str, 'XXX')).equal('XXXFGHIJKLMNOPQRSTUVWXYZXXXfghijklmnopqrstuvwxyz');
+			expect(Regex.replace(str, pattern, 'XXX', ['i'])).equal('XXXFGHIJKLMNOPQRSTUVWXYZXXXfghijklmnopqrstuvwxyz');
 			//noinspection SpellCheckingInspection
-			expect(regex.replace(str, '')).toBe('FGHIJKLMNOPQRSTUVWXYZfghijklmnopqrstuvwxyz');
+			expect(regex.replace(str, '')).equal('FGHIJKLMNOPQRSTUVWXYZfghijklmnopqrstuvwxyz');
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			expect(regex.replace(str, null as any)).toBe(str);
+			expect(regex.replace(str, null as any)).equal(str);
 			//noinspection SpellCheckingInspection
-			expect(regex.replace(str, () => '*')).toBe('*FGHIJKLMNOPQRSTUVWXYZ*fghijklmnopqrstuvwxyz');
-			expect(regex.replace(str, x => x.value + '*')).toBe(
+			expect(regex.replace(str, () => '*')).equal('*FGHIJKLMNOPQRSTUVWXYZ*fghijklmnopqrstuvwxyz');
+			expect(regex.replace(str, x => x.value + '*')).equal(
 				'ABCDE*FGHIJKLMNOPQRSTUVWXYZabcde*fghijklmnopqrstuvwxyz'
 			);
 			expect(regex.replace(str, (
 				x,
-				i) => i)).toBe('0FGHIJKLMNOPQRSTUVWXYZ1fghijklmnopqrstuvwxyz');
+				i) => i)).equal('0FGHIJKLMNOPQRSTUVWXYZ1fghijklmnopqrstuvwxyz');
 		});
 	});
 });

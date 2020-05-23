@@ -61,7 +61,7 @@ export class Regex
 		options?: RegexOptionsParam,
 		...extra: RegexOptionValues[])
 	{
-		if(!pattern) throw new Error("'pattern' cannot be null or empty.");
+		if(!pattern) throw new Error('\'pattern\' cannot be null or empty.');
 
 		let patternString: string,
 			flags =
@@ -236,9 +236,7 @@ export class Regex
 		{
 			const index = m.index, length = m.length;
 			if(p!==index) result.push(input.substring(p, index));
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore replacement is not easily resolved properly here.
-			result.push(isEvaluator ? replacement(m, i++) : replacement);
+			result.push(isEvaluator ? (replacement as any)(m, i++) : replacement);
 			p = index + length;
 		}
 
@@ -315,8 +313,8 @@ export class Match
 
 	freeze (): void
 	{
-		if(!this.groups) throw new Error("'groups' cannot be null.");
-		if(!this.namedGroups) throw new Error("'groupMap' cannot be null.");
+		if(!this.groups) throw new Error('\'groups\' cannot be null.');
+		if(!this.namedGroups) throw new Error('\'groupMap\' cannot be null.');
 		Object.freeze(this.groups);
 		Object.freeze(this.namedGroups);
 		super.freeze();
