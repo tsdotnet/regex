@@ -7,8 +7,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 type Map<T> = { [key: string]: T };
-type Primitive = string | number | boolean;
-type SelectorWithIndex<TSource, TResult> = (source: TSource, index: number) => TResult;
+import {Primitive, SelectorWithIndex} from '@tsdotnet/common-interfaces';
 
 const
 	EMPTY = '',
@@ -20,7 +19,7 @@ const
  * https://msdn.microsoft.com/en-us/library/system.text.regularexpressions.regexoptions%28v=vs.110%29.aspx
  */
 
-type RegexOptionsLiteral =
+export type RegexOptionsLiteral =
 	| RegexOptions.IgnoreCase
 	| 'i'
 	| 'I'
@@ -48,8 +47,8 @@ export enum RegexOptions
 
 Object.freeze(RegexOptions);
 
-type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
-type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
+export type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
+export type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
 
 export class Regex
 {
@@ -300,7 +299,7 @@ export class Match
 		value: string                           = EMPTY,
 		index: number                           = -1,
 		public readonly groups: Group[]         = [],
-		public readonly namedGroups: Map<Group> = {}
+		public readonly namedGroups: { [key: string]: Group } = {}
 	)
 	{
 		super(value, index);

@@ -3,15 +3,11 @@
  * Named groups based on: http://trentrichardson.com/2011/08/02/javascript-regexp-match-named-captures/
  * Licensing: MIT
  */
-declare type Map<T> = {
-    [key: string]: T;
-};
-declare type Primitive = string | number | boolean;
-declare type SelectorWithIndex<TSource, TResult> = (source: TSource, index: number) => TResult;
+import { Primitive, SelectorWithIndex } from '@tsdotnet/common-interfaces';
 /**
  * https://msdn.microsoft.com/en-us/library/system.text.regularexpressions.regexoptions%28v=vs.110%29.aspx
  */
-declare type RegexOptionsLiteral = RegexOptions.IgnoreCase | 'i' | 'I' | RegexOptions.MultiLine | 'm' | 'M' | RegexOptions.Unicode | 'u' | 'U' | RegexOptions.Sticky | 'y' | 'Y' | RegexOptions.IgnorePatternWhitespace | 'w' | 'W';
+export declare type RegexOptionsLiteral = RegexOptions.IgnoreCase | 'i' | 'I' | RegexOptions.MultiLine | 'm' | 'M' | RegexOptions.Unicode | 'u' | 'U' | RegexOptions.Sticky | 'y' | 'Y' | RegexOptions.IgnorePatternWhitespace | 'w' | 'W';
 export declare enum RegexOptions {
     IgnoreCase = "i",
     MultiLine = "m",
@@ -19,8 +15,8 @@ export declare enum RegexOptions {
     Sticky = "y",
     IgnorePatternWhitespace = "w"
 }
-declare type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
-declare type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
+export declare type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
+export declare type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
 export declare class Regex {
     private readonly _re;
     private readonly _keys;
@@ -84,8 +80,12 @@ export declare class Group extends Capture {
 }
 export declare class Match extends Group {
     readonly groups: Group[];
-    readonly namedGroups: Map<Group>;
-    constructor(value?: string, index?: number, groups?: Group[], namedGroups?: Map<Group>);
+    readonly namedGroups: {
+        [key: string]: Group;
+    };
+    constructor(value?: string, index?: number, groups?: Group[], namedGroups?: {
+        [key: string]: Group;
+    });
     static get Empty(): Match;
     freeze(): void;
 }
