@@ -7,7 +7,7 @@ import { Primitive, SelectorWithIndex } from '@tsdotnet/common-interfaces';
 /**
  * https://msdn.microsoft.com/en-us/library/system.text.regularexpressions.regexoptions%28v=vs.110%29.aspx
  */
-export declare type RegexOptionsLiteral = RegexOptions.IgnoreCase | 'i' | 'I' | RegexOptions.MultiLine | 'm' | 'M' | RegexOptions.Unicode | 'u' | 'U' | RegexOptions.Sticky | 'y' | 'Y' | RegexOptions.IgnorePatternWhitespace | 'w' | 'W';
+export type RegexOptionsLiteral = RegexOptions.IgnoreCase | 'i' | 'I' | RegexOptions.MultiLine | 'm' | 'M' | RegexOptions.Unicode | 'u' | 'U' | RegexOptions.Sticky | 'y' | 'Y' | RegexOptions.IgnorePatternWhitespace | 'w' | 'W';
 export declare enum RegexOptions {
     IgnoreCase = "i",
     MultiLine = "m",
@@ -15,8 +15,8 @@ export declare enum RegexOptions {
     Sticky = "y",
     IgnorePatternWhitespace = "w"
 }
-export declare type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
-export declare type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
+export type RegexOptionValues = RegexOptions | RegexOptionsLiteral;
+export type RegexOptionsParam = RegexOptionValues | RegexOptionValues[] | string;
 export declare class Regex {
     private readonly _re;
     private readonly _keys;
