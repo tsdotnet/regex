@@ -1,21 +1,22 @@
+"use strict";
 /*!
  * @author electricessence / https://github.com/electricessence/
  * Named groups based on: http://trentrichardson.com/2011/08/02/javascript-regexp-match-named-captures/
  * Licensing: MIT
  */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Match = exports.Group = exports.Capture = exports.Regex = exports.RegexOptions = void 0;
 const EMPTY = '', _I = 'i', _M = 'm', _W = 'w';
-export var RegexOptions;
+var RegexOptions;
 (function (RegexOptions) {
     RegexOptions["IgnoreCase"] = "i";
     RegexOptions["MultiLine"] = "m";
     RegexOptions["Unicode"] = "u";
     RegexOptions["Sticky"] = "y";
     RegexOptions["IgnorePatternWhitespace"] = "w";
-})(RegexOptions || (RegexOptions = {}));
+})(RegexOptions || (exports.RegexOptions = RegexOptions = {}));
 Object.freeze(RegexOptions);
-export class Regex {
-    _re;
-    _keys;
+class Regex {
     constructor(pattern, options, ...extra) {
         if (!pattern)
             throw new Error('\'pattern\' cannot be null or empty.');
@@ -167,9 +168,8 @@ export class Regex {
         return this._re.test(input);
     }
 }
-export class Capture {
-    value;
-    index;
+exports.Regex = Regex;
+class Capture {
     constructor(value = EMPTY, index = -1) {
         this.value = value;
         this.index = index;
@@ -182,7 +182,8 @@ export class Capture {
         Object.freeze(this);
     }
 }
-export class Group extends Capture {
+exports.Capture = Capture;
+class Group extends Capture {
     constructor(value = EMPTY, index = -1) {
         super(value, index);
     }
@@ -193,11 +194,10 @@ export class Group extends Capture {
         return this.index !== -1;
     }
 }
+exports.Group = Group;
 const EmptyGroup = new Group();
 EmptyGroup.freeze();
-export class Match extends Group {
-    groups;
-    namedGroups;
+class Match extends Group {
     constructor(value = EMPTY, index = -1, groups = [], namedGroups = {}) {
         super(value, index);
         this.groups = groups;
@@ -216,7 +216,8 @@ export class Match extends Group {
         super.freeze();
     }
 }
+exports.Match = Match;
 const EmptyMatch = new Match();
 EmptyMatch.freeze();
-export default Regex;
+exports.default = Regex;
 //# sourceMappingURL=Regex.js.map
