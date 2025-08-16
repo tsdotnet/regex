@@ -29,11 +29,12 @@
     "build": "concurrently pnpm:build:cjs pnpm:build:esm",
     "docs": "rimraf docs && typedoc --options typedoc.json --readme none",
     "lint": "eslint src/**/*.ts",
-    "precommit": "concurrently pnpm:lint pnpm:test && pnpm run build",
-    "prepublishOnly": "pnpm run build && pnpm test",
+    "precommit": "concurrently pnpm:lint pnpm:test && pnpm run build && pnpm run validate && git status -s",
+    "prepublishOnly": "pnpm run build && pnpm run validate && pnpm test",
     "preversion": "concurrently pnpm:lint pnpm:test",
     "postversion": "git push && git push --tags && pnpm run docs && git add -A && git commit -m \"Updated docs.\" docs && git push",
-    "test": "mocha -r ts-node/register tests/**/*.ts"
+    "test": "mocha -r ts-node/register tests/**/*.ts",
+    "validate": "node ./.build/validate-package.js"
   },
   "repository": {
     "type": "git",
