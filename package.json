@@ -8,8 +8,11 @@
   "main": "dist/Regex.js",
   "module": "dist/Regex.mjs",
   "exports": {
-    "import": "./dist/Regex.mjs",
-    "require": "./dist/Regex.js"
+    ".": {
+      "import": "./dist/Regex.mjs",
+      "require": "./dist/Regex.js",
+      "types": "./dist/Regex.d.ts"
+    }
   },
   "keywords": [
     "Regular Expression",
