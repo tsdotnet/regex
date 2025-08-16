@@ -1,6 +1,6 @@
 {
   "name": "@tsdotnet/regex",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A zero dependency, .NET style, Regular Expression class with named matches.",
   "author": "electricessence",
   "license": "MIT",
