@@ -4,8 +4,6 @@
  * Licensing: MIT
  */
 
-/* eslint-disable @typescript-eslint/no-use-before-define */
-
 type Map<T> = { [key: string]: T };
 import {Primitive, SelectorWithIndex} from '@tsdotnet/common-interfaces';
 
