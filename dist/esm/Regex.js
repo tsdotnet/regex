@@ -1,22 +1,19 @@
-"use strict";
 /*!
  * @author electricessence / https://github.com/electricessence/
  * Named groups based on: http://trentrichardson.com/2011/08/02/javascript-regexp-match-named-captures/
  * Licensing: MIT
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Match = exports.Group = exports.Capture = exports.Regex = exports.RegexOptions = void 0;
 const EMPTY = '', _I = 'i', _M = 'm', _W = 'w';
-var RegexOptions;
+export var RegexOptions;
 (function (RegexOptions) {
     RegexOptions["IgnoreCase"] = "i";
     RegexOptions["MultiLine"] = "m";
     RegexOptions["Unicode"] = "u";
     RegexOptions["Sticky"] = "y";
     RegexOptions["IgnorePatternWhitespace"] = "w";
-})(RegexOptions || (exports.RegexOptions = RegexOptions = {}));
+})(RegexOptions || (RegexOptions = {}));
 Object.freeze(RegexOptions);
-class Regex {
+export class Regex {
     _re;
     _keys;
     constructor(pattern, options, ...extra) {
@@ -170,8 +167,7 @@ class Regex {
         return this._re.test(input);
     }
 }
-exports.Regex = Regex;
-class Capture {
+export class Capture {
     value;
     index;
     constructor(value = EMPTY, index = -1) {
@@ -186,8 +182,7 @@ class Capture {
         Object.freeze(this);
     }
 }
-exports.Capture = Capture;
-class Group extends Capture {
+export class Group extends Capture {
     constructor(value = EMPTY, index = -1) {
         super(value, index);
     }
@@ -198,10 +193,9 @@ class Group extends Capture {
         return this.index !== -1;
     }
 }
-exports.Group = Group;
 const EmptyGroup = new Group();
 EmptyGroup.freeze();
-class Match extends Group {
+export class Match extends Group {
     groups;
     namedGroups;
     constructor(value = EMPTY, index = -1, groups = [], namedGroups = {}) {
@@ -222,8 +216,7 @@ class Match extends Group {
         super.freeze();
     }
 }
-exports.Match = Match;
 const EmptyMatch = new Match();
 EmptyMatch.freeze();
-exports.default = Regex;
+export default Regex;
 //# sourceMappingURL=Regex.js.map
