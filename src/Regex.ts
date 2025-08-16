@@ -65,10 +65,10 @@ export class Regex
 				typeof options==='string'
 					? (options + extra.join(EMPTY)).toLowerCase()
 					: ((options && (options instanceof Array
-					? options
-					: [options]).concat(extra)) || extra)
-					.join(EMPTY)
-					.toLowerCase();
+						? options
+						: [options]).concat(extra)) || extra)
+						.join(EMPTY)
+						.toLowerCase();
 
 		if(pattern instanceof RegExp)
 		{
