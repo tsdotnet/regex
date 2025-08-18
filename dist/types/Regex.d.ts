@@ -4,9 +4,6 @@
  * Licensing: MIT
  */
 import { Primitive, SelectorWithIndex } from '@tsdotnet/common-interfaces';
-/**
- * https://msdn.microsoft.com/en-us/library/system.text.regularexpressions.regexoptions%28v=vs.110%29.aspx
- */
 export type RegexOptionsLiteral = RegexOptions.IgnoreCase | 'i' | 'I' | RegexOptions.MultiLine | 'm' | 'M' | RegexOptions.Unicode | 'u' | 'U' | RegexOptions.Sticky | 'y' | 'Y' | RegexOptions.IgnorePatternWhitespace | 'w' | 'W';
 export declare enum RegexOptions {
     IgnoreCase = "i",
@@ -21,49 +18,12 @@ export declare class Regex {
     private readonly _re;
     private readonly _keys;
     constructor(pattern: string | RegExp, options?: RegexOptionsParam, ...extra: RegexOptionValues[]);
-    /**
-     * Tests a string pattern using a Regex for evaluation.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param options RegexOptions to use.
-     */
     static isMatch(input: string, pattern: string, options?: RegexOptionsParam): boolean;
-    /**
-     * Replaces all instances of the pattern with the replacement.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param options RegexOptions to use.
-     */
     static replace(input: string, pattern: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, options?: RegexOptionsParam): string;
-    /**
-     * Escapes a RegExp sequence.
-     * @param source
-     * @returns {string}
-     */
     static escape(source: string): string;
-    /**
-     * Searches an input string for a substring that matches a regular expression pattern and returns the first occurrence as a single Match object.
-     * @param input
-     * @param startIndex
-     */
     match(input: string, startIndex?: number): Match;
-    /**
-     * Searches an input string for all occurrences of a regular expression and returns all the matches.
-     * @param input
-     */
     matches(input: string): readonly Match[];
-    /**
-     * Replaces all instances of the pattern with the replacement.
-     * @param input The input text to evaluate.
-     * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param count Optional limit for number of times to replace.
-     */
     replace(input: string, replacement: Primitive | SelectorWithIndex<Match, Primitive>, count?: number): string;
-    /**
-     * Tests the input text for a match.
-     * @param input The input text to evaluate.
-     */
     isMatch(input: string): boolean;
 }
 export declare class Capture {

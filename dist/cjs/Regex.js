@@ -39,9 +39,7 @@ class Regex {
             patternString = pattern;
         }
         const ignoreWhiteSpace = flags.indexOf(_W) !== -1;
-        // For the majority of expected behavior, we need to eliminate global and whitespace ignore.
         flags = flags.replace(/[gw]/g, EMPTY);
-        // find the keys inside the pattern, and place in mapping array {0:'key1', 1:'key2', ...}
         const keys = [];
         {
             const k = patternString.match(/(?!\(\?<)(\w+)(?=>)/g);
@@ -49,7 +47,6 @@ class Regex {
                 for (let i = 0, len = k.length; i < len; i++) {
                     keys[i + 1] = k[i];
                 }
-                // remove keys from regexp leaving standard regexp
                 patternString = patternString.replace(/\?<\w+>/g, EMPTY);
                 this._keys = keys;
             }
@@ -59,43 +56,19 @@ class Regex {
         }
         Object.freeze(this);
     }
-    /**
-     * Tests a string pattern using a Regex for evaluation.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param options RegexOptions to use.
-     */
     static isMatch(input, pattern, options) {
         const r = new Regex(pattern, options);
         return r.isMatch(input);
     }
-    /**
-     * Replaces all instances of the pattern with the replacement.
-     * @param input The input text to evaluate.
-     * @param pattern The pattern to match.
-     * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param options RegexOptions to use.
-     */
     static replace(input, pattern, replacement, options) {
         const r = new Regex(pattern, options);
         return r.replace(input, replacement);
     }
-    /**
-     * Escapes a RegExp sequence.
-     * @param source
-     * @returns {string}
-     */
     static escape(source) {
         return source.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
     }
-    /**
-     * Searches an input string for a substring that matches a regular expression pattern and returns the first occurrence as a single Match object.
-     * @param input
-     * @param startIndex
-     */
     match(input, startIndex = 0) {
         let r;
-        // tslint:disable-next-line:no-conditional-assignment
         if (!input || startIndex >= input.length || !(r = this._re.exec(input.substring(startIndex))))
             return Match.Empty;
         if (!(startIndex > 0))
@@ -106,7 +79,6 @@ class Regex {
             const text = r[i];
             let g = EmptyGroup;
             if (text != null) {
-                // Empty string might mean \b match or similar.
                 g = new Group(text, loc);
                 g.freeze();
             }
@@ -120,27 +92,16 @@ class Regex {
         m.freeze();
         return m;
     }
-    /**
-     * Searches an input string for all occurrences of a regular expression and returns all the matches.
-     * @param input
-     */
     matches(input) {
         const matches = [];
         let m, p = 0;
         const end = (input && input.length) || 0;
-        // tslint:disable-next-line:no-conditional-assignment
         while (p < end && (m = this.match(input, p)) && m.success) {
             matches.push(m);
             p = m.index + m.length;
         }
         return Object.freeze(matches);
     }
-    /**
-     * Replaces all instances of the pattern with the replacement.
-     * @param input The input text to evaluate.
-     * @param replacement A primitive value or match evaluator to use for replacement.
-     * @param count Optional limit for number of times to replace.
-     */
     replace(input, replacement, count = Infinity) {
         if (!input || replacement == null || !(count > 0))
             return input;
@@ -148,7 +109,6 @@ class Regex {
         let p = 0;
         const end = input.length, isEvaluator = typeof replacement === 'function';
         let m, i = 0;
-        // tslint:disable-next-line:no-conditional-assignment
         while (i < count && p < end && (m = this.match(input, p)) && m.success) {
             const index = m.index, length = m.length;
             if (p !== index)
@@ -160,10 +120,6 @@ class Regex {
             result.push(input.substring(p));
         return result.join(EMPTY);
     }
-    /**
-     * Tests the input text for a match.
-     * @param input The input text to evaluate.
-     */
     isMatch(input) {
         return this._re.test(input);
     }

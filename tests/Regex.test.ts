@@ -1,5 +1,5 @@
 /* eslint-disable no-regex-spaces,no-control-regex */
-import {expect} from 'chai';
+import { describe, it, expect } from 'vitest';
 import Regex, {Match} from '../src/Regex';
 
 const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -18,19 +18,19 @@ describe('Regex', () => {
 	describe('new', () => {
 		it('should throw', () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			expect(() => new Regex(null as any)).to.throw();
+			expect(() => new Regex(null as any)).toThrow();
 		});
 	});
 
 	describe('.isMatch(input)', () => {
 		it('should indicate true for match', () => {
-			expect(regex.isMatch(str)).to.be.true;
-			expect(Regex.isMatch(str, pattern, ['i'])).to.be.true;
+			expect(regex.isMatch(str)).toBe(true);
+			expect(Regex.isMatch(str, pattern, ['i'])).toBe(true);
 		});
 
 		it('should indicate false for non-match', () => {
-			expect(!regex.isMatch('ZYXWV')).to.be.true;
-			expect(!Regex.isMatch('ZYXWV', pattern, ['i'])).to.be.true;
+			expect(!regex.isMatch('ZYXWV')).toBe(true);
+			expect(!Regex.isMatch('ZYXWV', pattern, ['i'])).toBe(true);
 		});
 	});
 

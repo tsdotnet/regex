@@ -94,7 +94,7 @@ export class Regex
 			{
 				for(let i = 0, len = k.length; i<len; i++)
 				{
-					keys[i + 1] = k[i];
+					keys[i + 1] = k[i]!;
 				}
 
 				// remove keys from regexp leaving standard regexp
@@ -178,7 +178,7 @@ export class Regex
 				g = new Group(text, loc);
 				g.freeze();
 			}
-			if(i && this._keys && i<this._keys.length) groupMap[this._keys[i]] = g;
+			if(i && this._keys && i<this._keys.length) groupMap[this._keys[i]!] = g;
 			groups.push(g);
 			if(text && i!==0) loc += text.length;
 		}
