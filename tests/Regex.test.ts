@@ -39,27 +39,33 @@ describe('Regex', () => {
 			let m = regex.match(str);
 			expect(m.value).equal('ABCDE');
 			expect(m.index).equal(0);
-			expect(m.namedGroups.first.value).equal('ABCDE');
+			const firstGroup = m.namedGroups.first;
+			expect(firstGroup).toBeDefined();
+			expect(firstGroup?.value).equal('ABCDE');
 
 			m = regex.match(str, 20);
 			expect(m.value).equal('abcde');
 			expect(m.index).equal(26);
-			expect(m.namedGroups.first.value).equal('abcde');
+			const firstGroupSecond = m.namedGroups.first;
+			expect(firstGroupSecond).toBeDefined();
+			expect(firstGroupSecond?.value).equal('abcde');
 		});
 	});
 
 	describe('.matches(input)', () => {
 		it('should capture all instances', () => {
-			function check (m: readonly Match[]): void
-			{
-				expect(m.length).equal(2);
-				expect(m[0].value).equal('ABCDE');
-				expect(m[0].index).equal(0);
-				expect(m[1].value).equal('abcde');
-				expect(m[1].index).equal(26);
-			}
-
-			check(regex.matches(str));
+		function check (m: readonly Match[]): void
+		{
+			expect(m.length).equal(2);
+			const firstMatch = m[0];
+			const secondMatch = m[1];
+			expect(firstMatch).toBeDefined();
+			expect(secondMatch).toBeDefined();
+			expect(firstMatch?.value).equal('ABCDE');
+			expect(firstMatch?.index).equal(0);
+			expect(secondMatch?.value).equal('abcde');
+			expect(secondMatch?.index).equal(26);
+		}			check(regex.matches(str));
 			check(regex4.matches(str));
 		});
 	});
