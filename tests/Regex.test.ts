@@ -1,6 +1,6 @@
 /* eslint-disable no-regex-spaces,no-control-regex */
 import { describe, it, expect } from 'vitest';
-import Regex, {Match} from '../src/Regex';
+import Regex, {Match, Group} from '../src/Regex';
 
 const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const regex = new Regex('(?<' + 'first>[A-E]+)', ['i']);
@@ -87,6 +87,66 @@ describe('Regex', () => {
 			expect(regex.replace(str, (
 				x,
 				i) => i)).equal('0FGHIJKLMNOPQRSTUVWXYZ1fghijklmnopqrstuvwxyz');
+		});
+	});
+
+	describe('static methods', () => {
+		it('should escape special regex characters', () => {
+			// Test the Regex.escape static method (lines 148-150)
+			expect(Regex.escape('hello')).toBe('hello');
+			expect(Regex.escape('hello.world')).toBe('hello\\.world');
+			expect(Regex.escape('test[123]')).toBe('test\\[123\\]');
+			expect(Regex.escape('path/to/file')).toBe('path\\/to\\/file');
+			expect(Regex.escape('braces{1,2}')).toBe('braces\\{1,2\\}');
+			expect(Regex.escape('parentheses(group)')).toBe('parentheses\\(group\\)');
+			expect(Regex.escape('asterisk*plus+')).toBe('asterisk\\*plus\\+');
+			expect(Regex.escape('question?')).toBe('question\\?');
+			expect(Regex.escape('backslash\\n')).toBe('backslash\\\\n');
+			expect(Regex.escape('caret^dollar$')).toBe('caret\\^dollar\\$');
+			expect(Regex.escape('pipe|or')).toBe('pipe\\|or');
+			
+			// Test all special characters together
+			const specialChars = '-[]/{}()*+?.\\^$|';
+			const escaped = Regex.escape(specialChars);
+			expect(escaped).toBe('\\-\\[\\]\\/\\{\\}\\(\\)\\*\\+\\?\\.\\\\\\^\\$\\|');
+			
+			// Test that escaped strings work in actual regex
+			const testStr = 'special.chars[here]';
+			const escapedPattern = Regex.escape(testStr);
+			const regex = new Regex(escapedPattern);
+			expect(regex.isMatch(testStr)).toBe(true);
+			expect(regex.isMatch('special-chars-here-')).toBe(false);
+		});
+	});
+
+	describe('Group class', () => {
+		it('should provide Empty static property', () => {
+			// Test the Group.Empty static getter (lines 280-282)
+			const emptyGroup = Group.Empty;
+			expect(emptyGroup).toBeDefined();
+			expect(emptyGroup.value).toBe('');
+			expect(emptyGroup.index).toBe(-1);
+			expect(emptyGroup.success).toBe(false);
+			
+			// Verify it's always the same instance
+			const emptyGroup2 = Group.Empty;
+			expect(emptyGroup).toBe(emptyGroup2);
+			
+			// Test that it's frozen (immutable)
+			expect(() => {
+				(emptyGroup as any).value = 'test';
+			}).toThrow();
+		});
+
+		it('should have success property based on index', () => {
+			const successfulGroup = new Group('match', 5);
+			expect(successfulGroup.success).toBe(true);
+			
+			const failedGroup = new Group('', -1);
+			expect(failedGroup.success).toBe(false);
+			
+			const zeroIndexGroup = new Group('match', 0);
+			expect(zeroIndexGroup.success).toBe(true);
 		});
 	});
 });
