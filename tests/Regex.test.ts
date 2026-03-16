@@ -1,6 +1,6 @@
 /* eslint-disable no-regex-spaces,no-control-regex */
 import { describe, it, expect } from 'vitest';
-import Regex, {Match, Group} from '../src/Regex';
+import Regex, {Match, Group} from '../src/Regex.js';
 
 const str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const regex = new Regex('(?<' + 'first>[A-E]+)', ['i']);
